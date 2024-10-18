@@ -29,8 +29,8 @@ class Main:
 
         message = (
             "\nYour character list is ready and have been saved in character_list.txt.\n"
-            "It is stoed in the preprocess folder.\n"
-            "Delete the characters you want to be removed your text file."
+            "It is stored in the preprocess folder.\n"
+            "Delete the characters you want to be removed from your text file."
             )
 
         print(message)
@@ -38,16 +38,18 @@ class Main:
     def get_preprocessed_text(self) -> None:
         """Creates text file with the preprocessed text."""
 
+        handle_text_dir("preprocess")
+
         preprocessed_text = preprocess(self.text)
 
-        # with open("preprocess/preprocessed_text.txt", "w", encoding="utf8") as output_file:
-        #     output_file.write(preprocessed_text)
+        with open("preprocess/preprocessed_text.txt", "w", encoding="utf8") as output_file:
+            output_file.write(preprocessed_text)
 
         message = (
             "\nYour text has now been preprocessed.\n"
             "You can use the other methods.\n"
             "If you find more noise, consider doing search and replace.\n"
-            "In a editor like word or google docs."
+            "In a editor like Libre Office Writer, Word or Google Docs."
             )
 
         print(message)
@@ -62,4 +64,4 @@ class Main:
 
 
 mii = Main()
-mii.get_preprocessed_text()
+mii.get_word_list()
