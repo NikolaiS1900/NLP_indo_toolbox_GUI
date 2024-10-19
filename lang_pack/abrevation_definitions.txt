@@ -1,0 +1,32 @@
+al = alveolars and postalveolars
+ap = approximants
+bl = bilabials
+bv = back vowels
+df = short back vowels
+dt = dentals
+fr = fricatives
+fv = front vowels
+gl = glottals
+la = laterals
+lbv = long back vowels
+ld = labiodentals
+lfv = long front vowels
+na = nasales
+pa = palatals
+pl = plosives
+sbv = short back vowels
+sfv = short front vowels
+tr = trills
+ve = velars
+
+Notes:
+For practical reasons, the Faroese vowels has been categorized
+by their Old Norse values.
+
+
+IPA character pickers
+https://schwa.dk/filer/ipacharpick/
+https://r12a.github.io/pickers/ipa/
+
+Dania Character picker
+http://schwa.dk/filer/daniategnvaelger/
