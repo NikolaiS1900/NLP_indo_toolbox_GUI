@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 
 class MyApp:
     def __init__(self, root):
@@ -10,7 +9,7 @@ class MyApp:
 
         # Define a dictionary to keep track of checkbox states
         self.checkbox_vars = {
-            "Option 1": tk.BooleanVar(),
+            "Get character list": tk.BooleanVar(),
             "Option 2": tk.BooleanVar(),
             "Option 3": tk.BooleanVar(),
             "Option 4": tk.BooleanVar(),
@@ -23,18 +22,26 @@ class MyApp:
             "Nested Option 3": tk.BooleanVar(),
         }
 
+        # Create the main layout
+        self.create_main_layout()
+
+    def create_main_layout(self):
+        # Create a frame for the checkboxes
+        checkbox_frame = ttk.Frame(self.root, padding=10)
+        checkbox_frame.pack(side="left", anchor="n", fill="both", expand=True)
+
+        # Create a Text widget for displaying messages
+        self.message_box = tk.Text(self.root, width=400, height=30, wrap="word")
+        self.message_box.pack(side="right", padx=10, pady=10, anchor="n", fill="y")
+
         # Create the checkboxes
-        self.create_checkboxes()
+        self.create_checkboxes(checkbox_frame)
 
-    def create_checkboxes(self):
-        # Frame for main checkboxes
-        main_frame = ttk.Frame(self.root, padding=10)
-        main_frame.pack(anchor="w", fill="x", expand=True)
-
+    def create_checkboxes(self, parent_frame):
         # Loop through the dictionary and create a checkbox for each item
         for text, var in self.checkbox_vars.items():
             checkbox = ttk.Checkbutton(
-                main_frame,
+                parent_frame,
                 text=text,
                 variable=var,
                 command=lambda t=text: self.on_checkbox_toggle(t)
@@ -44,7 +51,7 @@ class MyApp:
             # If it's "Option 2", create nested checkboxes
             if text == "Option 2":
                 # Frame for nested checkboxes
-                nested_frame = ttk.Frame(main_frame, padding=20)
+                nested_frame = ttk.Frame(parent_frame, padding=20)
                 nested_frame.pack(anchor="w", fill="x", padx=20)
 
                 for nested_text, nested_var in self.nested_checkbox_vars.items():
@@ -59,32 +66,33 @@ class MyApp:
     def on_checkbox_toggle(self, option):
         # Check the state of the main checkbox and call the corresponding method
         if self.checkbox_vars[option].get():
-            self.show_message(f"{option} is selected", "Info")
+            self.show_message(f"{option} is selected")
             self.perform_action(option)
         else:
-            self.show_message(f"{option} is deselected", "Info")
+            self.show_message(f"{option} is deselected")
             self.stop_action(option)
 
     def on_nested_checkbox_toggle(self, nested_option):
         # Check the state of the nested checkbox and call the corresponding method
         if self.nested_checkbox_vars[nested_option].get():
-            self.show_message(f"{nested_option} is selected", "Info")
+            self.show_message(f"{nested_option} is selected")
             self.perform_action(nested_option)
         else:
-            self.show_message(f"{nested_option} is deselected", "Info")
+            self.show_message(f"{nested_option} is deselected")
             self.stop_action(nested_option)
 
-    def show_message(self, message, title):
-        # Display a message box with the given message and title
-        messagebox.showinfo(title, message)
+    def show_message(self, message):
+        # Display a message in the message box
+        self.message_box.insert("end", message + "\n")
+        self.message_box.see("end")  # Scroll to the latest message
 
     def perform_action(self, option):
         # Example method to perform an action when a checkbox is selected
-        print(f"Performing action for {option}")
+        print("kat")
 
     def stop_action(self, option):
         # Example method to stop an action when a checkbox is deselected
-        print(f"Stopping action for {option}")
+        print("mii")
 
 if __name__ == "__main__":
     root = tk.Tk()

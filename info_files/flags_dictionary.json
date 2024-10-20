@@ -1,0 +1,12 @@
+{
+    "argument_methods": [
+        "--get_char_list",
+        "--get_preprocessed_text",
+        "--get_word_list"
+    ],
+    "methods": [
+        "--get_char_list",
+        "--get_preprocessed_text",
+        "--get_word_list"
+    ]
+}
