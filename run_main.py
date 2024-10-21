@@ -1,100 +1,62 @@
-import tkinter as tk
-from tkinter import ttk
+import os
+from gooey import Gooey, GooeyParser
+from char_list import char_list
+from load_file import load_file
+from mk_text_dir import handle_text_dir
+from preprocess import preprocess
+from word_list import make_word_list
 
-class MyApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Checkbox GUI Example")
-        self.root.geometry("900x700")
+class Main:
+    """Class for running the methods."""
 
-        # Define a dictionary to keep track of checkbox states
-        self.checkbox_vars = {
-            "Get character list": tk.BooleanVar(),
-            "Option 2": tk.BooleanVar(),
-            "Option 3": tk.BooleanVar(),
-            "Option 4": tk.BooleanVar(),
-        }
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.text = load_file(file_path)
+        self.file_name = os.path.basename(file_path)  # Get just the file name
 
-        # Define a dictionary for nested checkboxes under "Option 2"
-        self.nested_checkbox_vars = {
-            "Nested Option 1": tk.BooleanVar(),
-            "Nested Option 2": tk.BooleanVar(),
-            "Nested Option 3": tk.BooleanVar(),
-        }
+    def get_char_list(self) -> None:
+        """Creates a text file with the character list."""
+        handle_text_dir("preprocess")  # Ensure 'preprocess' directory exists
+        list_of_characters = char_list(self.text)
 
-        # Create the main layout
-        self.create_main_layout()
+        file_name_no_white_space = self.file_name.replace(" ", "_")
+        file_name_no_white_space_no_extension = file_name_no_white_space.replace(".txt", "")
 
-    def create_main_layout(self):
-        # Create a frame for the checkboxes
-        checkbox_frame = ttk.Frame(self.root, padding=10)
-        checkbox_frame.pack(side="left", anchor="n", fill="both", expand=True)
+        output_file_path = f"preprocess/{file_name_no_white_space_no_extension}_characters_to_delete.txt"
+        with open(output_file_path, "w", encoding="utf8") as output_file:
+            output_file.write(list_of_characters)
 
-        # Create a Text widget for displaying messages
-        self.message_box = tk.Text(self.root, width=400, height=30, wrap="word")
-        self.message_box.pack(side="right", padx=10, pady=10, anchor="n", fill="y")
+        message = (
+            f"\nYou selected {self.file_name} to generate a character list from\n\n"
+            f"Your character list is ready and has been saved in {output_file_path}.\n"
+            "It is stored in the preprocess folder.\n"
+            "Delete the characters you want to be removed from your text file."
+        )
+        print(message)  # This will now appear in the Gooey GUI output area
 
-        # Create the checkboxes
-        self.create_checkboxes(checkbox_frame)
+@Gooey(program_name="Text Processing Tool", 
+       program_description="A simple tool to preprocess text files",
+       default_size=(800, 600))
+def main():
+    parser = GooeyParser(description="Choose an action to perform")
+    parser.add_argument('file_path', 
+                        widget='FileChooser', 
+                        help="Select the text file to process")
+    
+    # Action as a boolean flag
+    parser.add_argument('--get_char_list', 
+                        action="store_true", 
+                        help="Generate a character list from the selected text file")
 
-    def create_checkboxes(self, parent_frame):
-        # Loop through the dictionary and create a checkbox for each item
-        for text, var in self.checkbox_vars.items():
-            checkbox = ttk.Checkbutton(
-                parent_frame,
-                text=text,
-                variable=var,
-                command=lambda t=text: self.on_checkbox_toggle(t)
-            )
-            checkbox.pack(anchor="w")
+    args = parser.parse_args()
 
-            # If it's "Option 2", create nested checkboxes
-            if text == "Option 2":
-                # Frame for nested checkboxes
-                nested_frame = ttk.Frame(parent_frame, padding=20)
-                nested_frame.pack(anchor="w", fill="x", padx=20)
+    # Initialize the Main class with the selected file path
+    my_app = Main(args.file_path)
 
-                for nested_text, nested_var in self.nested_checkbox_vars.items():
-                    nested_checkbox = ttk.Checkbutton(
-                        nested_frame,
-                        text=nested_text,
-                        variable=nested_var,
-                        command=lambda nt=nested_text: self.on_nested_checkbox_toggle(nt)
-                    )
-                    nested_checkbox.pack(anchor="w")
-
-    def on_checkbox_toggle(self, option):
-        # Check the state of the main checkbox and call the corresponding method
-        if self.checkbox_vars[option].get():
-            self.show_message(f"{option} is selected")
-            self.perform_action(option)
-        else:
-            self.show_message(f"{option} is deselected")
-            self.stop_action(option)
-
-    def on_nested_checkbox_toggle(self, nested_option):
-        # Check the state of the nested checkbox and call the corresponding method
-        if self.nested_checkbox_vars[nested_option].get():
-            self.show_message(f"{nested_option} is selected")
-            self.perform_action(nested_option)
-        else:
-            self.show_message(f"{nested_option} is deselected")
-            self.stop_action(nested_option)
-
-    def show_message(self, message):
-        # Display a message in the message box
-        self.message_box.insert("end", message + "\n")
-        self.message_box.see("end")  # Scroll to the latest message
-
-    def perform_action(self, option):
-        # Example method to perform an action when a checkbox is selected
-        print("kat")
-
-    def stop_action(self, option):
-        # Example method to stop an action when a checkbox is deselected
-        print("mii")
+    # Perform the selected action
+    if args.get_char_list:  # Check if the action flag is set
+        print(args.get_char_list)  # This should now print in the GUI
+        my_app.get_char_list()  # Call the method to get character list
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = MyApp(root)
-    root.mainloop()
+    main()
