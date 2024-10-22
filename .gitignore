@@ -1,8 +1,7 @@
 # Data files
 preprocess/*.*
 text/*.*
-character_list.txt
-word_list.txt
+*.txt
 
 
 # Virtual environment directories

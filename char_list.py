@@ -6,9 +6,10 @@ import re
 def char_list(text: str) -> str:
     """Makes an overview of all individual characters in thetext."""
 
-
+    # Makes sure there is a folder called preprocesss
+    # if it doesn't exist, it will be created
     if not os.path.exists("preprocess"):
-        os.makedirs(preprocess)
+        os.makedirs("preprocess")
     else:
         pass
 
