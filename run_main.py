@@ -25,10 +25,6 @@ class App:
         self.file_entry = tk.Entry(root, textvariable=self.file_path, width=40)
         self.file_entry.pack(pady=10)
 
-        # # Create a field for user inputs.
-        # self.entry_field = tk.Entry(root)
-        # self.entry_field.pack(pady=10)
-
         # Create a button for browsing a file
         self.browse_button = tk.Button(root, text="Browse", command=self.browse_file)
         self.browse_button.pack(pady=5)
@@ -43,30 +39,41 @@ class App:
         self.word_button = tk.Button(root, text="Generate Word List", command=self.generate_word_list)
         self.word_button.pack(pady=10)
 
-        # Create a button to trigger the function
-        self.show_button = ttk.Button(root, text="Anlaut Word list Search", command=self.anlaut_search)
-        self.show_button.pack(pady=10)
 
         self.quit_button = tk.Button(root, text="Mii", command=self.mii)
         self.quit_button.pack(pady=10)
 
-        # Dropdown options for search_anlaut
-        self.language_options = list(self.languages_dict.keys())
-        self.language_dropdown = ttk.Combobox(root, values=self.language_options)
-        self.language_dropdown.set("Select a language")  # Default text
+       # Create a button to show the language dropdown
+        self.show_languages_button = ttk.Button(root, text="Select Languages", command=self.show_languages)
+        self.show_languages_button.pack(pady=10)
+
+        # Create Combobox for language selection (initially hidden)
+        self.language_dropdown = ttk.Combobox(root, values=[], state='readonly')
         self.language_dropdown.pack(pady=10)
+        self.language_dropdown.pack_forget()  # Hide it initially
 
-        # Bind event for language selection
-        self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
-
-        # Create second Combobox for key selection (initially hidden)
-        self.key_dropdown = ttk.Combobox(root)
+        # Create second Combobox for sound category selection (initially hidden)
+        self.key_dropdown = ttk.Combobox(root, state='readonly')
         self.key_dropdown.pack(pady=10)
         self.key_dropdown.pack_forget()  # Hide it initially
 
 
     def mii(self):
         messagebox.showinfo(self.load_json_content("lang_pack/sound_category_dictionary.json"))
+
+
+    def show_languages(self):
+        """Show the language dropdown when the button is pressed."""
+        # Populate the language dropdown
+        self.language_options = list(self.languages_dict.keys())
+        self.language_dropdown.config(values=self.language_options)
+        
+        # Show the language dropdown
+        self.language_dropdown.pack()
+        self.language_dropdown.set("Select a language")  # Default text
+        
+        # Bind event for language selection
+        self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
 
 
     def on_language_selected(self, event):
