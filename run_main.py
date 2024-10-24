@@ -16,6 +16,7 @@ class App:
         self.root.title("Text Processing Application")
         self.root.geometry("600x500")
 
+        self.user_input = tk.StringVar()
         self.file_path = tk.StringVar()
 
         # Load the dictionary from the JSON file
@@ -43,23 +44,32 @@ class App:
         self.quit_button = tk.Button(root, text="Mii", command=self.mii)
         self.quit_button.pack(pady=10)
 
+
+    # Create a text input field for user input
+        self.user_input_entry = tk.Entry(root, textvariable=self.user_input, width=40)
+        self.user_input_entry.pack(pady=10)
+        self.user_input_entry.pack_forget()  # Hide it initially
+
+        self.anlaut_button = ttk.Button(root, text="Anlaut", command=self.anlaut_button)
+        self.anlaut_button.pack(pady=10)
+
+
        # Create a button to show the language dropdown
-        self.show_languages_button = ttk.Button(root, text="Select Languages", command=self.show_languages)
+        self.show_languages_button = ttk.Button(root, text="Select Language", command=self.show_languages)
         self.show_languages_button.pack(pady=10)
+        self.show_languages_button.pack_forget()  # Hide it initially
 
         # Create Combobox for language selection (initially hidden)
         self.language_dropdown = ttk.Combobox(root, values=[], state='readonly')
         self.language_dropdown.pack(pady=10)
         self.language_dropdown.pack_forget()  # Hide it initially
 
-        # Create second Combobox for sound category selection (initially hidden)
-        self.key_dropdown = ttk.Combobox(root, state='readonly')
-        self.key_dropdown.pack(pady=10)
-        self.key_dropdown.pack_forget()  # Hide it initially
 
 
     def mii(self):
         messagebox.showinfo(self.load_json_content("lang_pack/sound_category_dictionary.json"))
+
+
 
 
     def show_languages(self):
@@ -76,6 +86,7 @@ class App:
         self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
 
 
+
     def on_language_selected(self, event):
         """Handle the event when a language is selected."""
         selected_language = self.language_dropdown.get()
@@ -84,24 +95,17 @@ class App:
         # Populate the key dropdown with keys from the selected language
         language_data = self.languages_dict.get(selected_language, {})
         self.key_options = list(language_data.keys())
-        self.key_dropdown.config(values=self.key_options)
         
-        # Show the key dropdown
-        self.key_dropdown.pack()
-        self.key_dropdown.set("Select a key")  # Default text
+        # Show the the user input field
+        self.user_input_entry.pack()
         
         # Bind event for key selection
-        self.key_dropdown.bind("<<ComboboxSelected>>", self.on_key_selected)
+        self.user_input_entry.bind("<<ComboboxSelected>>", self.anlaut_button)
 
-    def on_key_selected(self, event):
-        """Handle the event when a key is selected."""
-        selected_language = self.language_dropdown.get()
-        selected_key = self.key_dropdown.get()
-        language_data = self.languages_dict.get(selected_language, {})
-        selected_value = language_data.get(selected_key, "")
-        
-        print(f"Selected key: {selected_key}, Value: {selected_value}")
-        # Here you can use selected_value for further processing
+
+    def anlaut_button(self, event=None):
+        """Display the language dropdown when the Anlaut button is pressed."""
+        self.show_languages()
 
     def load_json_content(self, json_file_path):
         """Load the content of the specified JSON file."""
