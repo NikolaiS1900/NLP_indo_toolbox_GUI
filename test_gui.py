@@ -1,53 +1,25 @@
-# interface.py
-import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
+def perform_regex_search(self, event=None):
+    """Handle regex search when the button is pressed."""
+    # Get the user input and selected search type
+    user_input_value = self.user_input.get().strip()  # Get and strip whitespace from user input
+    search_type_value = self.selected_search_type  # This value is set in on_search_type_selected
 
-class TkinterInterface:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Tkinter Example")
-        self.root.geometry("300x300")
-        
-        # Dropdown options
-        self.options1 = ["Option 1", "Option 2", "Option 3"]
-        self.options2 = ["Choice A", "Choice B", "Choice C"]
+    # Validate input
+    if not user_input_value:
+        messagebox.showwarning("Input Error", "Please enter a search term.")
+        return
 
-        # Create Comboboxes (dropdown menus)
-        self.dropdown1 = ttk.Combobox(root, values=self.options1)
-        self.dropdown2 = ttk.Combobox(root, values=self.options2)
+    if not search_type_value:
+        messagebox.showwarning("Selection Error", "Please select a search type.")
+        return
 
-        # Create text entry field
-        self.entry_field = tk.Entry(root)
+    # Store the selected search type and user input
+    self.selected_search_type = search_type_value
+    self.user_input_value = user_input_value  # Store the user input
 
-        # Create a button to trigger the function
-        self.show_button = ttk.Button(root, text="Show Widgets", command=self.show_widgets)
-        self.show_button.pack(pady=20)
+    # Optionally, you can display the selected values or process them further
+    messagebox.showinfo("Search Criteria", f"User Input: {self.user_input_value}\nSearch Type: {self.selected_search_type}")
 
-        # Create a button to browse a file
-        self.browse_button = ttk.Button(root, text="Browse File", command=self.browse_file)
-        self.browse_button.pack(pady=20)
-
-    def show_widgets(self):
-        """Show dropdown menus and text entry field."""
-        # Dropdown menu 1
-        dropdown1_label = ttk.Label(self.root, text="Select Option 1:")
-        dropdown1_label.pack(pady=5)
-        self.dropdown1.pack(pady=5)
-
-        # Dropdown menu 2
-        dropdown2_label = ttk.Label(self.root, text="Select Option 2:")
-        dropdown2_label.pack(pady=5)
-        self.dropdown2.pack(pady=5)
-
-        # Text entry field
-        entry_label = ttk.Label(self.root, text="Enter a string:")
-        entry_label.pack(pady=5)
-        self.entry_field.pack(pady=5)
-
-    def browse_file(self):
-        """Open a file dialog to select a file."""
-        file_path = filedialog.askopenfilename(title="Select a File", filetypes=[("All Files", "*.*")])
-        if file_path:
-            # Display the selected file path or perform other actions
-            print(f"Selected file: {file_path}")
+    # Call methods to execute the search or further processing here
+    # For example, you might call a method to perform the regex search based on the input and type
+    # self.execute_regex_search(user_input_value, search_type_value)

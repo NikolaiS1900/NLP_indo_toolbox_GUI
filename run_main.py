@@ -1,6 +1,7 @@
 import json
 import re
 import tkinter as tk
+from info_window import open_new_window
 from load_file import load_file
 from load_json import load_json
 from char_list import char_list
@@ -18,6 +19,8 @@ class App:
 
         self.user_input = tk.StringVar()
         self.file_path = tk.StringVar()
+        self.selected_language = None  # Instance variable for the selected language
+        self.selected_search_type = None
 
         # Load the dictionary from the JSON file
         self.languages_dict = self.load_json_content("lang_pack/sound_category_dictionary.json")
@@ -40,37 +43,32 @@ class App:
         self.word_button = tk.Button(root, text="Generate Word List", command=self.generate_word_list)
         self.word_button.pack(pady=10)
 
-
         self.quit_button = tk.Button(root, text="Mii", command=self.mii)
         self.quit_button.pack(pady=10)
 
-
-    # Create a text input field for user input
+        # Create a text input field for user input
         self.user_input_entry = tk.Entry(root, textvariable=self.user_input, width=40)
         self.user_input_entry.pack(pady=10)
         self.user_input_entry.pack_forget()  # Hide it initially
 
-        self.anlaut_button = ttk.Button(root, text="Anlaut", command=self.anlaut_button)
-        self.anlaut_button.pack(pady=10)
+        # Bind the "Enter" key to the perform_regex_search function
+        self.user_input_entry.bind("<Return>", self.perform_regex_search)
 
-
-       # Create a button to show the language dropdown
-        self.show_languages_button = ttk.Button(root, text="Select Language", command=self.show_languages)
-        self.show_languages_button.pack(pady=10)
-        self.show_languages_button.pack_forget()  # Hide it initially
+        self.regex_search_button = ttk.Button(root, text="Regex Search", command=self.perform_regex_search)
+        self.regex_search_button.pack(pady=10)
 
         # Create Combobox for language selection (initially hidden)
         self.language_dropdown = ttk.Combobox(root, values=[], state='readonly')
         self.language_dropdown.pack(pady=10)
         self.language_dropdown.pack_forget()  # Hide it initially
 
-
+        # Dropdown for selecting search type
+        self.search_type = ttk.Combobox(root, values=["Anlaut", "Inlaut", "Auslaut"], state='readonly')
+        self.search_type.pack(pady=10)
+        self.search_type.pack_forget()  # Hide it initially
 
     def mii(self):
         messagebox.showinfo(self.load_json_content("lang_pack/sound_category_dictionary.json"))
-
-
-
 
     def show_languages(self):
         """Show the language dropdown when the button is pressed."""
@@ -80,38 +78,60 @@ class App:
         
         # Show the language dropdown
         self.language_dropdown.pack()
-        self.language_dropdown.set("Select a language")  # Default text
+        self.language_dropdown.set("Select regex overview")  # Default text
         
         # Bind event for language selection
         self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
 
 
-
     def on_language_selected(self, event):
         """Handle the event when a language is selected."""
-        selected_language = self.language_dropdown.get()
-        print(f"Selected language: {selected_language}")
+        self.selected_language = self.language_dropdown.get()  # Store the selected language
 
-        # Populate the key dropdown with keys from the selected language
-        language_data = self.languages_dict.get(selected_language, {})
-        self.key_options = list(language_data.keys())
-        
-        # Show the the user input field
-        self.user_input_entry.pack()
-        
-        # Bind event for key selection
-        self.user_input_entry.bind("<<ComboboxSelected>>", self.anlaut_button)
+        selected_language_dictionary = self.languages_dict[self.selected_language]
 
+        dictionary_list = []
 
-    def anlaut_button(self, event=None):
-        """Display the language dropdown when the Anlaut button is pressed."""
+        for key, value in selected_language_dictionary.items():
+            dictionary_list.append(f"ᚱ{key}ᚱ = {value}")
+
+        dictionary_list_string = "\n\n".join(dictionary_list)
+
+        # Call open_new_window immediately after a language is selected
+        open_new_window(self.root, dictionary_list_string)
+
+    def show_search_type(self):
+        self.search_type.pack()
+        self.search_type.set("Select Search Type")
+
+        # Bind event for language selection
+        self.search_type.bind("<<ComboboxSelected>>", self.on_search_type_selected)
+
+    def on_search_type_selected(self, event):
+        self.selected_search_type = self.search_type.get()
+
+    def perform_regex_search(self, event=None):
+        """Handle regex search when the button is pressed."""
         self.show_languages()
+        self.show_search_type()
+
+        # Show the user input field
+        self.user_input_entry.pack()
+
+        user_input_value = self.user_input.get()
+        search_type_value = self.selected_search_type
+
+        if user_input_value:
+            messagebox.showinfo("Search Criteria", f"User Input: {user_input_value}"
+                                f"\nSearch Type: {search_type_value}")
+        else:
+            pass
+
 
     def load_json_content(self, json_file_path):
         """Load the content of the specified JSON file."""
-
         if not json_file_path:
-            raise ValueError(f"No JSON file path provided.{json_file_path}")
+            raise ValueError(f"No JSON file path provided: {json_file_path}")
 
         return load_json(json_file_path)
 
