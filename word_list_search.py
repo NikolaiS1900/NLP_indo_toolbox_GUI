@@ -5,7 +5,12 @@ import re
 def get_value_from_json(pattern: str) -> str:
     print("")
 
-def do_search(word_list: str, user_input_value: str, search_type_value: str) -> str:
+def do_search(word_list: str,
+              user_input_value: str,
+              search_type_value: str,
+              selected_language: str,
+              sound_category_dictionary: dict
+              ) -> str:
     """Searches the word list by the user input.
 
     If the rune ᚱ is found, it will prompt the function to load the sound_category_dictionary.json
@@ -15,6 +20,7 @@ def do_search(word_list: str, user_input_value: str, search_type_value: str) -> 
         word_list (str): The word list to search.
         user_input_value (str): The user input value to search for.
         search_type_value (str): The search type value to search for.
+        selected_language (str): The selected language.
 
     Returns:
         str: A new word list.

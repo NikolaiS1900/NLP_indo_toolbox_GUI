@@ -73,7 +73,7 @@ class App:
         
         # Show the language dropdown
         self.language_dropdown.pack()
-        self.language_dropdown.set("Select regex overview")  # Default text
+        self.language_dropdown.set("Select language")  # Default text
         
         # Bind event for language selection
         self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
@@ -114,21 +114,30 @@ class App:
 
         user_input_value = self.user_input.get()
         search_type_value = self.selected_search_type
-    
+        selected_language = self.selected_language
 
-        if user_input_value and self.file_path:
+
+        # If the conditions below are not met, nothing will happens if the user hits Enter
+        # or hit the Regex Search button.
+        if user_input_value and self.file_path and selected_language and search_type_value:
             # Load the file content from the top bar.
             word_list = self.load_file_content(self.file_path.get())
 
             # Do the search
-            search_result = do_search(word_list, user_input_value, search_type_value)
+            search_result = do_search(word_list, user_input_value,
+                                      search_type_value,
+                                      selected_language,
+                                      self.languages_dict)
 
             with open(f"{search_type_value}_search_word_list.txt",
                         "w", encoding="utf8") as output_file:
                 output_file.write(search_result)
 
-            # messagebox.showinfo("Search Criteria", f"User Input: {user_input_value}"
-            #                     f"\nSearch Type: {search_type_value}")
+            messagebox.showinfo("Search is done",
+                                f"\nThe results are saved in"
+                                f"\n{search_type_value}_search_word_list.txt"
+                                )
+            
         else:
             pass
 
