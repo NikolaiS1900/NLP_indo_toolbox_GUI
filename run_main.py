@@ -1,4 +1,3 @@
-import json
 import re
 import tkinter as tk
 from info_window import open_new_window
@@ -8,14 +7,16 @@ from char_list import char_list
 from preprocess import preprocess
 from tkinter import messagebox, filedialog, ttk
 from word_list import make_word_list
+from word_list_search import do_search
 
 class App:
     """GUI Application for text processing."""
 
     def __init__(self, root):
         self.root = root
-        self.root.title("Text Processing Application")
+        self.root.title("NLP toolbox for Indo-European")
         self.root.geometry("600x500")
+        self.root.configure(bg="#4169E1")
 
         self.user_input = tk.StringVar()
         self.file_path = tk.StringVar()
@@ -25,50 +26,44 @@ class App:
         # Load the dictionary from the JSON file
         self.languages_dict = self.load_json_content("lang_pack/sound_category_dictionary.json")
 
+        # Create a button for browsing a file
+        self.browse_button = tk.Button(root, text="Browse text file", width=40, command=self.browse_file)
+        self.browse_button.pack(pady=10)
+
         # Create input for file path
-        self.file_entry = tk.Entry(root, textvariable=self.file_path, width=40)
+        self.file_entry = tk.Entry(root, textvariable=self.file_path, width=44, state="readonly")
         self.file_entry.pack(pady=10)
 
-        # Create a button for browsing a file
-        self.browse_button = tk.Button(root, text="Browse", command=self.browse_file)
-        self.browse_button.pack(pady=5)
-
         # Create buttons for processing
-        self.char_button = tk.Button(root, text="Generate Character List", command=self.generate_char_list)
+        self.char_button = tk.Button(root, text="Generate Character List", width=40, command=self.generate_char_list)
         self.char_button.pack(pady=10)
 
-        self.preprocess_button = tk.Button(root, text="Preprocess Text", command=self.preprocess_text)
+        self.preprocess_button = tk.Button(root, text="Preprocess Text", width=40, command=self.preprocess_text)
         self.preprocess_button.pack(pady=10)
 
-        self.word_button = tk.Button(root, text="Generate Word List", command=self.generate_word_list)
+        self.word_button = tk.Button(root, text="Generate Word List", width=40, command=self.generate_word_list)
         self.word_button.pack(pady=10)
 
-        self.quit_button = tk.Button(root, text="Mii", command=self.mii)
-        self.quit_button.pack(pady=10)
-
         # Create a text input field for user input
-        self.user_input_entry = tk.Entry(root, textvariable=self.user_input, width=40)
+        self.user_input_entry = tk.Entry(root, textvariable=self.user_input, width=44)
         self.user_input_entry.pack(pady=10)
         self.user_input_entry.pack_forget()  # Hide it initially
 
         # Bind the "Enter" key to the perform_regex_search function
         self.user_input_entry.bind("<Return>", self.perform_regex_search)
 
-        self.regex_search_button = ttk.Button(root, text="Regex Search", command=self.perform_regex_search)
+        self.regex_search_button = ttk.Button(root, text="Regex Search", width=42, command=self.perform_regex_search)
         self.regex_search_button.pack(pady=10)
 
         # Create Combobox for language selection (initially hidden)
-        self.language_dropdown = ttk.Combobox(root, values=[], state='readonly')
+        self.language_dropdown = ttk.Combobox(root, values=[], state='readonly', width=40)
         self.language_dropdown.pack(pady=10)
         self.language_dropdown.pack_forget()  # Hide it initially
 
         # Dropdown for selecting search type
-        self.search_type = ttk.Combobox(root, values=["Anlaut", "Inlaut", "Auslaut"], state='readonly')
+        self.search_type = ttk.Combobox(root, values=["Anlaut", "Inlaut", "Auslaut", "Free Search"], state='readonly', width=40)
         self.search_type.pack(pady=10)
         self.search_type.pack_forget()  # Hide it initially
-
-    def mii(self):
-        messagebox.showinfo(self.load_json_content("lang_pack/sound_category_dictionary.json"))
 
     def show_languages(self):
         """Show the language dropdown when the button is pressed."""
@@ -82,7 +77,6 @@ class App:
         
         # Bind event for language selection
         self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
-
 
     def on_language_selected(self, event):
         """Handle the event when a language is selected."""
@@ -120,13 +114,23 @@ class App:
 
         user_input_value = self.user_input.get()
         search_type_value = self.selected_search_type
+    
 
-        if user_input_value:
-            messagebox.showinfo("Search Criteria", f"User Input: {user_input_value}"
-                                f"\nSearch Type: {search_type_value}")
+        if user_input_value and self.file_path:
+            # Load the file content from the top bar.
+            word_list = self.load_file_content(self.file_path.get())
+
+            # Do the search
+            search_result = do_search(word_list, user_input_value, search_type_value)
+
+            with open(f"{search_type_value}_search_word_list.txt",
+                        "w", encoding="utf8") as output_file:
+                output_file.write(search_result)
+
+            # messagebox.showinfo("Search Criteria", f"User Input: {user_input_value}"
+            #                     f"\nSearch Type: {search_type_value}")
         else:
             pass
-
 
     def load_json_content(self, json_file_path):
         """Load the content of the specified JSON file."""
@@ -144,6 +148,7 @@ class App:
     def load_file_content(self, file_path):
         """Load the content of the specified file."""
         if not file_path:
+            messagebox.showerror("Error", "No file path provided.")
             raise ValueError("No file path provided.")
         return load_file(file_path)
 
