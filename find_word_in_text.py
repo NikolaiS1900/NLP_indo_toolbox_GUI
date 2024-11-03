@@ -11,7 +11,7 @@ def find_word_in_text(word_list: str, text: str):
         text (str): The text to search in.
 
     Returns:
-        list[str]: The list of words that were found in the text.
+        list[str]: The lines which matches the words
     """
 
     if "," not in word_list:
