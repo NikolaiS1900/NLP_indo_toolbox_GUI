@@ -2,7 +2,8 @@
 import re
 
 
-def find_word_in_text(word_list: list[str], text: str):
+
+def find_word_in_text(word_list: str, text: str):
     """Find the word in the text.
 
     Args:
@@ -13,11 +14,18 @@ def find_word_in_text(word_list: list[str], text: str):
         list[str]: The list of words that were found in the text.
     """
 
+    if "," not in word_list:
+        word_list = [word_list]
+    else:
+        word_list = word_list.split(",")
+
     lines = text.split("\n")
 
     findings_list_list = [re.findall(rf"\w*{word}\w*", text, re.IGNORECASE) for word in word_list]
 
-    findings_list = set(findings_list_list[1])
+    flattened_list = [item for sublist in findings_list_list for item in sublist]
+
+    findings_list = set(flattened_list)
 
     matching_lines = []
 
