@@ -214,11 +214,14 @@ class App:
         search_type_value = self.selected_search_type
         selected_language = self.selected_language
 
+        file_name = re.sub(r".*[\\/]", "", self.file_path.get())
+        file_name_no_extension = file_name.replace(".txt", "")
+
         if user_input_value and self.file_path.get() and selected_language and search_type_value:
             word_list = self.load_file_content(self.file_path.get())
             search_result = do_search(word_list, user_input_value, search_type_value, selected_language, self.languages_dict)
 
-            with open(f"{search_type_value}_search_word_list.txt",
+            with open(f"{file_name_no_extension}_{search_type_value}_search_word_list.txt",
                         "w", encoding="utf8") as output_file:
                 output_file.write(search_result)
 
