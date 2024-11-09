@@ -21,11 +21,22 @@ def preprocess(text: str, char_list: str) -> str:
     else:
         pass
 
-    # Removes whitespace and newline characters
-    char_list_string = re.sub(r'(\s+|\n+)', '', char_list)
+    if not text and not char_list:
+        raise ValueError("Text and character list are empty")
 
-    # Deletes all characters in character_to_delete.txt
-    translation_table = str.maketrans("", "", char_list_string)
-    preprocessed_text = text.translate(translation_table)
+    if not isinstance(text, str):
+        raise TypeError("Text is not a string")
 
-    return preprocessed_text
+    if not isinstance(char_list, str):
+        raise TypeError("Character list is not a string")
+    
+    else:
+
+        # Removes whitespace and newline characters
+        char_list_string = re.sub(r'(\s+|\n+)', '', char_list)
+
+        # Deletes all characters in character_to_delete.txt
+        translation_table = str.maketrans("", "", char_list_string)
+        preprocessed_text = text.translate(translation_table)
+
+        return preprocessed_text

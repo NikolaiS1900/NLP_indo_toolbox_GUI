@@ -9,6 +9,3 @@ dictionary = load_json("lang_pack/sound_category_dictionary.json")
 word_list = get_value_from_json("oᚱnaᚱᚱveᚱ", "Danish_Norwegian_Swedish", dictionary)
 
 print(word_list)
-
-
-

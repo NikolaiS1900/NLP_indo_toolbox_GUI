@@ -1,6 +1,7 @@
 import unittest
 from logger import tk_handle_exception
 from char_list import char_list
+from preprocess import preprocess
 from word_list import make_word_list
 
 
@@ -41,7 +42,7 @@ class TestModules(unittest.TestCase):
         self.assertEqual(char_list(input_text), "! d e h l o r w")
 
     def test5(self) -> None:
-        """make_word_list test with empty string input.
+        """preprocess test with empty string input.
         
         The empty string input should raise a ValueError.
         """
@@ -51,7 +52,7 @@ class TestModules(unittest.TestCase):
             make_word_list(input_text)
 
     def test6(self) -> None:
-        """make_word_list test with non-string input.
+        """preprocess test with non-string input.
         
         The non-string input should raise a TypeError.
         """
@@ -61,6 +62,35 @@ class TestModules(unittest.TestCase):
             make_word_list(input_text)
 
     def test7(self) -> None:
+        """preprocess test with valid string input"""
+        input_text = "hello world!"
+
+        char_list = "!"
+        
+        self.assertEqual(preprocess(input_text, char_list), "hello world")
+
+
+    def test8(self) -> None:
+        """make_word_list test with empty string input.
+        
+        The empty string input should raise a ValueError.
+        """
+        input_text = ""
+        
+        with self.assertRaises(ValueError):
+            make_word_list(input_text)
+
+    def test9(self) -> None:
+        """make_word_list test with non-string input.
+        
+        The non-string input should raise a TypeError.
+        """
+        input_text = 123
+        
+        with self.assertRaises(TypeError):
+            make_word_list(input_text)
+
+    def test10(self) -> None:
         """make_word_list test with valid string input"""
         input_text = "hello world!"
         
