@@ -1,12 +1,15 @@
+"""Thos module contains the main class for running the app."""
+
 import re
 import tkinter as tk
+from tkinter import messagebox, filedialog, ttk
 from info_window import open_new_window
 from load_file import load_file
 from load_json import load_json
+from logger import tk_handle_exception
 from char_list import char_list
 from find_word_in_text import find_word_in_text
 from preprocess import preprocess
-from tkinter import messagebox, filedialog, ttk
 from word_list import make_word_list
 from word_list_search import do_search
 
@@ -14,6 +17,8 @@ class App:
     """GUI Application for text processing."""
 
     def __init__(self, root):
+        tk.Tk.report_callback_exception = tk_handle_exception
+
         self.root = root
         self.root.title("NLP toolbox for Indo-European")
         self.root.geometry("600x500")
@@ -33,7 +38,8 @@ class App:
         self.languages_dict = self.load_json_content("lang_pack/sound_category_dictionary.json")
 
         # Create a button for browsing a file
-        self.browse_button = tk.Button(root, text="Browse text file", width=40, command=self.browse_file)
+        self.browse_button = tk.Button(root, text="Browse text file", width=40,
+                                       command=self.browse_file)
         self.browse_button.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
 
         # Create input for file path
@@ -41,16 +47,20 @@ class App:
         self.file_entry.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
 
         # Create buttons for processing
-        self.char_button = tk.Button(root, text="Generate Character List", width=40, command=self.generate_char_list)
+        self.char_button = tk.Button(root, text="Generate Character List", width=40,
+                                     command=self.generate_char_list)
         self.char_button.grid(row=2, column=1, padx=10, pady=5, sticky="ew")
 
-        self.preprocess_button = tk.Button(root, text="Preprocess Text", width=40, command=self.preprocess_text)
+        self.preprocess_button = tk.Button(root, text="Preprocess Text", width=40,
+                                           command=self.preprocess_text)
         self.preprocess_button.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
 
-        self.word_button = tk.Button(root, text="Generate Word List", width=40, command=self.generate_word_list)
+        self.word_button = tk.Button(root, text="Generate Word List", width=40,
+                                     command=self.generate_word_list)
         self.word_button.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
 
-        self.regex_search_button = ttk.Button(root, text="Regex Search", width=42, command=self.perform_regex_search)
+        self.regex_search_button = ttk.Button(root, text="Regex Search", width=42,
+                                              command=self.perform_regex_search)
         self.regex_search_button.grid(row=5, column=1, padx=10, pady=5, sticky="ew")
 
         # Create a text input field for user input
@@ -67,13 +77,17 @@ class App:
         self.language_dropdown.bind("<<ComboboxSelected>>", self.on_language_selected)
 
         # Dropdown for selecting search type
-        self.search_type = ttk.Combobox(root, values=["Anlaut", "Inlaut", "Auslaut", "Free Search"], state='readonly', width=40)
+        self.search_type = ttk.Combobox(root, values=["Anlaut",
+                                                      "Inlaut",
+                                                      "Auslaut",
+                                                      "Free Search"], state='readonly', width=40)
         self.search_type.grid(row=8, column=1, padx=10, pady=5, sticky="ew")
         self.search_type.grid_remove()
         self.search_type.bind("<<ComboboxSelected>>", self.on_search_type_selected)
 
         # Button for finding words in a text.
-        self.find_words_in_text_button = ttk.Button(root, text="Find words in text", width=42, command=self.find_words_in_text)
+        self.find_words_in_text_button = ttk.Button(root, text="Find words in text",
+                                                    width=42, command=self.find_words_in_text)
         self.find_words_in_text_button.grid(row=10, column=1, padx=10, pady=5, sticky="ew")
 
         # Create a text input field for user input
@@ -92,7 +106,7 @@ class App:
             raise ValueError(f"No JSON file path provided: {json_file_path}")
 
         return load_json(json_file_path)
-    
+
     def load_file_content(self, file_path):
         """Load the content of the specified file."""
         if not file_path:
@@ -102,7 +116,8 @@ class App:
 
     def browse_file(self):
         """Open a file dialog to select a file."""
-        file_path = filedialog.askopenfilename(title="Select a Text File", filetypes=[("Text Files", "*.txt")])
+        file_path = filedialog.askopenfilename(title="Select a Text File",
+                                               filetypes=[("Text Files", "*.txt")])
         if file_path:
             self.file_path.set(file_path)
 
@@ -123,14 +138,15 @@ class App:
             messagebox.showinfo("Success", "Character list has been saved in "
                                 f"preprocess/{file_name_no_extension}_characters_to_delete.txt"
                                 )
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+        except Exception as exception:
+            messagebox.showerror("Error", str(exception))
 
     def preprocess_text(self):
         """Handle text preprocessing."""
         try:
             # Open a new file selection dialog for preprocessing
-            char_list = filedialog.askopenfilename(title="Select a Text File to Preprocess", filetypes=[("Text Files", "*.txt")])
+            char_list = filedialog.askopenfilename(title="Select a Text File to Preprocess",
+                                                   filetypes=[("Text Files", "*.txt")])
             if not char_list:
                 return  # If no file is selected, exit the method
 
@@ -219,7 +235,8 @@ class App:
 
         if user_input_value and self.file_path.get() and selected_language and search_type_value:
             word_list = self.load_file_content(self.file_path.get())
-            search_result = do_search(word_list, user_input_value, search_type_value, selected_language, self.languages_dict)
+            search_result = do_search(word_list, user_input_value,
+                                      search_type_value, selected_language, self.languages_dict)
 
             with open(f"{file_name_no_extension}_{search_type_value}_search_word_list.txt",
                         "w", encoding="utf8") as output_file:
@@ -229,12 +246,13 @@ class App:
                                 f"\nThe results are saved in"
                                 f"\n{search_type_value}_search_word_list.txt"
                                 )
-            
+
         else:
             pass
 
 
     def find_words_in_text(self, event=None):
+        """Handle find words in text search and makes a text file."""
 
         self.user_input_entry_find_words.grid()  # Show the user input field
 
