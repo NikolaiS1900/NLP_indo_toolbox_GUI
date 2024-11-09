@@ -12,12 +12,20 @@ def make_word_list(text: str) -> str:
     Returns: A list of words from the text.
     """
 
-    split_text = text.split()
+    if not text:
+        raise ValueError("Text is empty")
 
-    uniq_elems_only = set(split_text)
+    if not isinstance(text, str):
+        raise TypeError("Text is not a string")
 
-    sorted_list = sorted(uniq_elems_only)
+    else:
 
-    nice_list = "\n\n".join(sorted_list)
+        split_text = text.split()
 
-    return nice_list
+        uniq_elems_only = set(split_text)
+
+        sorted_list = sorted(uniq_elems_only)
+
+        nice_list = "\n\n".join(sorted_list)
+
+        return nice_list
