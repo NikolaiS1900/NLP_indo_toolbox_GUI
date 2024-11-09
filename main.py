@@ -190,8 +190,8 @@ class App:
     def show_languages(self):
         """Show the language dropdown when the button is pressed."""
         # Populate the language dropdown
-        self.language_options = list(self.languages_dict.keys())
-        self.language_dropdown.config(values=self.language_options)
+        language_options = list(self.languages_dict.keys())
+        self.language_dropdown.config(values=language_options)
         self.language_dropdown.grid()  # Show dropdown
         self.language_dropdown.set("Select language")  # Default text
 
