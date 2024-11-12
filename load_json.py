@@ -1,6 +1,6 @@
 import json
 
-def load_json(json_file_path):
+def load_json(json_file_path: str) -> dict:
     """Load the JSON file and return the dictionary."""
     try:
         with open(json_file_path, 'r', encoding='utf-8') as json_file:
