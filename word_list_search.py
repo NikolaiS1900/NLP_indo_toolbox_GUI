@@ -22,9 +22,9 @@ def get_value_from_json(user_input_value: str,
     i = 0
     while i < len(user_input_value):
         # Check if any character "i" is "ᚱ"
-        if user_input_value[i] == 'ᚱ':
+        if user_input_value[i] == "ᚱ":
             # Find the next "ᚱ", by looking from the index after the current "ᚱ"
-            end = user_input_value.find('ᚱ', i + 1)
+            end = user_input_value.find("ᚱ", i + 1)
             if end == -1:
                 # No closing "ᚱ" found, just add the rest of the string
                 search_string_list.append(user_input_value[i:])
@@ -37,7 +37,7 @@ def get_value_from_json(user_input_value: str,
             replacement = sound_dict_with_chosen_language.get(between_runes, between_runes)
 
             # Add the replacement to the search_string_list
-            search_string_list.append(f'[{replacement}]')
+            search_string_list.append(f"[{replacement}]")
 
             # Move the index past the closing "ᚱ"
             i = end + 1

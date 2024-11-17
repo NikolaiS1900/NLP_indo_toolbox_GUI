@@ -1,8 +1,6 @@
 """This module contains the function find_word_in_text."""
 import re
 
-
-
 def find_word_in_text(word_list: str, text: str):
     """Find the word in the text.
 
